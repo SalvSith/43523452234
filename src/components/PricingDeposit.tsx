@@ -248,7 +248,6 @@ const TooltipModal: React.FC<TooltipModalProps> = ({ isOpen, title, content, onC
             >
               <p className="block leading-[1.5]">Got it</p>
             </div>
-            <div className="absolute inset-0 pointer-events-none shadow-[0px_2px_3px_0px_inset_rgba(255,255,255,0.36)]" />
           </div>
         </div>
       </div>
