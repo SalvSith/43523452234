@@ -560,6 +560,18 @@ const useThemeDetection = () => {
     } else {
       document.documentElement.classList.remove('dark');
     }
+    
+    // Update theme-color meta tag
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]:not([media])');
+    if (themeColorMeta) {
+      themeColorMeta.setAttribute('content', isDark ? '#1c1a20' : '#fcfcff');
+    } else {
+      // Create a new meta tag if it doesn't exist
+      const newMeta = document.createElement('meta');
+      newMeta.name = 'theme-color';
+      newMeta.content = isDark ? '#1c1a20' : '#fcfcff';
+      document.head.appendChild(newMeta);
+    }
   };
 
   const toggleTheme = () => {
