@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Google Fonts - specific weights for tooltip design */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Custom font family definitions */
+@layer base {
+  html {
+    font-family: 'Manrope', sans-serif;
+  }
+}
+
+/* Input placeholder styling for dark/light modes */
+.pricing-input::placeholder {
+  color: #aca0bb;
+}
+
+.dark .pricing-input::placeholder {
+  color: #6a6a76;
+}
+
+/* Tooltip modal animations */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.2s ease-out;
+} 
