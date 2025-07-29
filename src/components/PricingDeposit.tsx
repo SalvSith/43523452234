@@ -595,8 +595,8 @@ const PricingDeposit: React.FC = () => {
       <div className="h-[100px] relative">
         {/* Status Bar */}
         <div className="h-11 flex items-center justify-between px-5">
-          <div className="text-sm font-semibold">9:41</div>
-          <div className="flex items-center gap-1">
+          <div className="text-sm font-semibold opacity-0">9:41</div>
+          <div className="flex items-center gap-1 opacity-0">
             <div className="w-4 h-3">{/* Signal bars */}</div>
             <div className="w-4 h-3">{/* WiFi */}</div>
             <div className="w-5 h-3">{/* Battery */}</div>
