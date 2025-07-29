@@ -10,6 +10,16 @@
   html {
     font-family: 'Manrope', sans-serif;
   }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #fcfcff; /* Light mode background */
+  }
+  
+  .dark body {
+    background-color: #1c1a20; /* Dark mode background */
+  }
 }
 
 /* Input placeholder styling for dark/light modes */

@@ -589,7 +589,11 @@ const PricingDeposit: React.FC = () => {
   return (
     <div 
       className={`min-h-screen relative transition-all duration-300 ${isDarkMode ? 'dark' : ''}`}
-      style={{ backgroundColor: theme.background }}
+      style={{ 
+        backgroundColor: theme.background,
+        paddingTop: 0,
+        marginTop: 0 
+      }}
     >
       {/* Header */}
       <div className="h-[38px] relative">
