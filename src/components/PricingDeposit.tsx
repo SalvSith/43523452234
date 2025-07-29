@@ -592,19 +592,9 @@ const PricingDeposit: React.FC = () => {
       style={{ backgroundColor: theme.background }}
     >
       {/* Header */}
-      <div className="h-[100px] relative">
-        {/* Status Bar */}
-        <div className="h-11 flex items-center justify-between px-5">
-          <div className="text-sm font-semibold opacity-0">9:41</div>
-          <div className="flex items-center gap-1 opacity-0">
-            <div className="w-4 h-3">{/* Signal bars */}</div>
-            <div className="w-4 h-3">{/* WiFi */}</div>
-            <div className="w-5 h-3">{/* Battery */}</div>
-          </div>
-        </div>
-        
+      <div className="h-[38px] relative">
         {/* Progress Indicator */}
-        <div className="h-1 mx-5 mt-6 flex gap-1">
+        <div className="h-1 mx-5 mt-7 flex gap-1">
           <div 
             className="flex-1 h-1 rounded-sm transition-all duration-300"
             style={{ backgroundColor: theme.primaryButton }}
