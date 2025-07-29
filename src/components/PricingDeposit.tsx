@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 // Icon assets - Updated to use public folder references
 const imgVector = "/help-icon.svg";
@@ -517,6 +517,62 @@ const CalculationCard: React.FC<CalculationCardProps> = ({ label, value, showHel
   );
 };
 
+// Theme detection hook
+const useThemeDetection = () => {
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+
+  useEffect(() => {
+    // Check if user has a saved preference
+    const savedTheme = localStorage.getItem('theme');
+    
+    if (savedTheme) {
+      // Use saved preference
+      const isDark = savedTheme === 'dark';
+      setIsDarkMode(isDark);
+      updateDocumentTheme(isDark);
+    } else {
+      // Use system preference
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const isDark = mediaQuery.matches;
+      setIsDarkMode(isDark);
+      updateDocumentTheme(isDark);
+      
+      // Listen for changes to system theme
+      const handleChange = (e: MediaQueryListEvent) => {
+        // Only update if user hasn't manually set a preference
+        if (!localStorage.getItem('theme')) {
+          setIsDarkMode(e.matches);
+          updateDocumentTheme(e.matches);
+        }
+      };
+      
+      mediaQuery.addEventListener('change', handleChange);
+      
+      return () => {
+        mediaQuery.removeEventListener('change', handleChange);
+      };
+    }
+  }, []);
+
+  const updateDocumentTheme = (isDark: boolean) => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
+
+  const toggleTheme = () => {
+    const newIsDark = !isDarkMode;
+    setIsDarkMode(newIsDark);
+    updateDocumentTheme(newIsDark);
+    // Save user preference
+    localStorage.setItem('theme', newIsDark ? 'dark' : 'light');
+  };
+
+  return { isDarkMode, toggleTheme };
+};
+
 // Main Component - Add isDesktop prop
 interface PricingDepositProps {
   isDesktop?: boolean;
@@ -526,7 +582,7 @@ const PricingDeposit: React.FC<PricingDepositProps> = ({ isDesktop = false }) =>
   const [weeklyRent, setWeeklyRent] = useState<string>('');
   const [frequency, setFrequency] = useState<'weekly' | 'monthly'>('weekly');
   const [depositWeeks, setDepositWeeks] = useState<number>(1);
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  const { isDarkMode, toggleTheme } = useThemeDetection(); // Use the theme detection hook
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
   const [rentError, setRentError] = useState<string>('');
@@ -701,7 +757,7 @@ const PricingDeposit: React.FC<PricingDepositProps> = ({ isDesktop = false }) =>
                 fontFamily: 'Manrope, sans-serif',
                 color: theme.textPrimary
               }}
-              onClick={() => setIsDarkMode(!isDarkMode)}
+              onClick={toggleTheme}
             >
               Set Your Rental Terms
             </h1>
@@ -999,7 +1055,7 @@ const PricingDeposit: React.FC<PricingDepositProps> = ({ isDesktop = false }) =>
             fontFamily: 'Manrope, sans-serif',
             color: theme.textPrimary
           }}
-          onClick={() => setIsDarkMode(!isDarkMode)}
+          onClick={toggleTheme} // Use the toggleTheme function instead of manual state toggle
         >
           Set Your Rental Terms
         </h1>
