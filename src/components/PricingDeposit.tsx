@@ -599,6 +599,19 @@ const PricingDeposit: React.FC<PricingDepositProps> = ({ isDesktop = false }) =>
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
   const [rentError, setRentError] = useState<string>('');
 
+  // Preload tooltip background images to prevent transparent loading
+  useEffect(() => {
+    const preloadImages = () => {
+      const images = [tooltipBg, tooltipBgDark];
+      images.forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
+    };
+    
+    preloadImages();
+  }, []);
+
   // Theme configuration based on Figma design
   const theme = {
     background: isDarkMode ? '#1c1a20' : '#fcfcff',
