@@ -282,7 +282,12 @@ const HelpTooltip: React.FC<HelpTooltipProps> = ({ isDarkMode = false, tooltipKe
 interface MultiSelectorProps {
   value: number;
   onChange: (value: number) => void;
-  theme: any;
+  theme: {
+    cardBackground: string;
+    cardBorder: string;
+    primaryButton: string;
+    textMuted: string;
+  };
 }
 
 const MultiSelector: React.FC<MultiSelectorProps> = ({ value, onChange, theme }) => {
@@ -596,7 +601,7 @@ const PricingDeposit: React.FC = () => {
       }}
     >
       {/* Header */}
-      <div className="h-[38px] relative">
+      <div className="h-[32px] relative pt-2">
         {/* Progress Indicator */}
         <div className="h-1 mx-5 flex gap-1">
           <div 
@@ -618,7 +623,7 @@ const PricingDeposit: React.FC = () => {
       <div className="px-5">
         {/* Title */}
         <h1 
-          className="text-[26px] font-bold mb-2 cursor-pointer transition-all duration-300 hover:opacity-80" 
+          className="text-[26px] font-bold mb-1 cursor-pointer transition-all duration-300 hover:opacity-80" 
           style={{ 
             fontFamily: 'Manrope, sans-serif',
             color: theme.textPrimary
@@ -628,7 +633,7 @@ const PricingDeposit: React.FC = () => {
           Set Your Rental Terms
         </h1>
         <p 
-          className="text-[15px] font-light mb-8 transition-all duration-300" 
+          className="text-[15px] font-light mb-6 transition-all duration-300" 
           style={{ 
             fontFamily: 'Inter, sans-serif', 
             letterSpacing: '0.5px',
