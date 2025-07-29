@@ -1,12 +1,12 @@
 import React, { useState, useMemo } from 'react';
 
-// Icon assets
-const imgVector = "http://localhost:3845/assets/432fc8c5afdbf9ce6854eac8b328413fce1efce6.svg";
-const imgVectorDark = "http://localhost:3845/assets/6a1f4bbab32a2f91771617e1e2b79319e417caff.svg";
-const imgVectorPressed = "http://localhost:3845/assets/ea5b084a46d2d19ad1741897aafb831ba018558e.svg";
+// Icon assets - Updated to use public folder references
+const imgVector = "/help-icon.svg";
+const imgVectorDark = "/help-icon-dark.svg";
+const imgVectorPressed = "/help-icon-pressed.svg";
 const imgPound = "/X.svg";
-const tooltipBg = "http://localhost:3845/assets/394e559446f30f52511a9bb3be3f1688e1b3539c.svg";
-const tooltipBgDark = "http://localhost:3845/assets/633f37394cc7576dbb8ee1e0ff98a0507769e4d5.svg";
+const tooltipBg = "/tooltip-bg.svg";
+const tooltipBgDark = "/tooltip-bg-dark.svg";
 
 // Tooltip data
 const tooltipData = {
