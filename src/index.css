@@ -31,6 +31,40 @@
   color: #6a6a76;
 }
 
+/* Desktop-specific enhancements */
+@media (min-width: 768px) {
+  /* Smooth scrolling for desktop */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Enhanced hover states for desktop */
+  .desktop-card-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .desktop-card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Desktop tooltip animations */
+  .desktop-tooltip-enter {
+    animation: tooltip-fade-in 0.2s ease-out;
+  }
+  
+  @keyframes tooltip-fade-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
 /* Tooltip modal animations */
 @keyframes slide-up {
   from {
@@ -60,4 +94,17 @@
 
 .animate-slide-down {
   animation: slide-down 0.2s ease-out;
+}
+
+/* Desktop-specific responsive utilities */
+@layer utilities {
+  @media (min-width: 768px) {
+    .desktop-max-w-6xl {
+      max-width: 72rem;
+    }
+    
+    .desktop-grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
 } 

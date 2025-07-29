@@ -299,13 +299,16 @@ const MultiSelector: React.FC<MultiSelectorProps> = ({ value, onChange, theme })
     const index = value - 1;
     const totalButtons = 5;
     
-    // Simple calculation: each button takes 20% of container
+    // Account for the px-1 padding (4px on each side) in the buttons container
+    // Container width without padding: calc(100% - 8px)
+    // Each button takes 20% of the available space
     const buttonWidth = 100 / totalButtons; // 20% each
     const baseLeft = index * buttonWidth;
     
-    // Make the slider wider and adjust position to better center over buttons
-    const sliderWidth = buttonWidth + 1; // Slightly wider than button area
-    const sliderLeft = baseLeft - 0.5; // Shift left slightly to center the wider slider
+    // Add small padding to account for the px-1 container padding
+    const paddingAdjustment = 0.3; // Small adjustment for visual centering
+    const sliderWidth = buttonWidth - (paddingAdjustment * 2);
+    const sliderLeft = baseLeft + paddingAdjustment;
     
     return {
       left: `${sliderLeft}%`,
@@ -462,7 +465,7 @@ const CalculationCard: React.FC<CalculationCardProps> = ({ label, value, showHel
 
   return (
     <div 
-      className="cursor-pointer relative rounded-2xl border h-[68px] transition-all duration-200"
+      className="cursor-pointer relative rounded-2xl border h-[68px] transition-all duration-200 md:h-[80px] md:desktop-card-hover"
       style={getCardStyles()}
       onClick={() => onTooltipOpen(tooltipKey)}
       onMouseEnter={() => setIsHovered(true)}
@@ -476,7 +479,7 @@ const CalculationCard: React.FC<CalculationCardProps> = ({ label, value, showHel
       onTouchEnd={() => setIsPressed(false)}
     >
       <div 
-        className={`absolute top-[9px] left-4 text-[14px] ${getLabelFontWeight()} transition-colors duration-200`}
+        className={`absolute top-[9px] left-4 text-[14px] md:top-[12px] ${getLabelFontWeight()} transition-colors duration-200`}
         style={{ 
           fontFamily: 'Manrope, sans-serif',
           color: getLabelColor()
@@ -485,7 +488,7 @@ const CalculationCard: React.FC<CalculationCardProps> = ({ label, value, showHel
         {label}
       </div>
       <div 
-        className={`absolute left-[15px] ${getPriceFontWeight()} transition-all duration-200`}
+        className={`absolute left-[15px] md:top-[42px] ${getPriceFontWeight()} transition-all duration-200`}
         style={{ 
           fontFamily: 'Manrope, sans-serif',
           color: getPriceColor(),
@@ -514,8 +517,12 @@ const CalculationCard: React.FC<CalculationCardProps> = ({ label, value, showHel
   );
 };
 
-// Main Component
-const PricingDeposit: React.FC = () => {
+// Main Component - Add isDesktop prop
+interface PricingDepositProps {
+  isDesktop?: boolean;
+}
+
+const PricingDeposit: React.FC<PricingDepositProps> = ({ isDesktop = false }) => {
   const [weeklyRent, setWeeklyRent] = useState<string>('');
   const [frequency, setFrequency] = useState<'weekly' | 'monthly'>('weekly');
   const [depositWeeks, setDepositWeeks] = useState<number>(1);
@@ -591,6 +598,370 @@ const PricingDeposit: React.FC = () => {
     setActiveTooltip(null);
   };
 
+  // Desktop-specific tooltip component
+  const DesktopTooltip: React.FC<{
+    title: string;
+    content: string;
+    children: React.ReactNode;
+  }> = ({ title, content, children }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [position, setPosition] = useState({ top: 0, left: 0 });
+    const tooltipRef = React.useRef<HTMLDivElement>(null);
+    const triggerRef = React.useRef<HTMLDivElement>(null);
+
+    React.useEffect(() => {
+      if (isOpen && triggerRef.current && tooltipRef.current) {
+        const triggerRect = triggerRef.current.getBoundingClientRect();
+        const tooltipRect = tooltipRef.current.getBoundingClientRect();
+        
+        // Position tooltip above the trigger element
+        const top = triggerRect.top - tooltipRect.height - 10;
+        const left = triggerRect.left + (triggerRect.width / 2) - (tooltipRect.width / 2);
+        
+        // Ensure tooltip stays within viewport
+        const adjustedLeft = Math.max(10, Math.min(left, window.innerWidth - tooltipRect.width - 10));
+        const adjustedTop = top < 10 ? triggerRect.bottom + 10 : top;
+        
+        setPosition({ top: adjustedTop, left: adjustedLeft });
+      }
+    }, [isOpen]);
+
+    return (
+      <>
+        <div ref={triggerRef} onClick={() => setIsOpen(!isOpen)}>
+          {children}
+        </div>
+        {isOpen && (
+          <>
+            <div 
+              className="fixed inset-0 z-40" 
+              onClick={() => setIsOpen(false)}
+            />
+            <div
+              ref={tooltipRef}
+              className="fixed z-50 p-6 rounded-2xl shadow-xl max-w-sm transition-all duration-200"
+              style={{
+                backgroundColor: theme.cardBackground,
+                border: `1px solid ${theme.cardBorder}`,
+                top: `${position.top}px`,
+                left: `${position.left}px`,
+              }}
+            >
+              <h3 
+                className="text-lg font-bold mb-2"
+                style={{ color: theme.textPrimary }}
+              >
+                {title}
+              </h3>
+              <p 
+                className="text-sm"
+                style={{ color: theme.textSecondary }}
+              >
+                {content}
+              </p>
+            </div>
+          </>
+        )}
+      </>
+    );
+  };
+
+  if (isDesktop) {
+    return (
+      <div 
+        className={`min-h-screen relative transition-all duration-300 ${isDarkMode ? 'dark' : ''}`}
+        style={{ 
+          backgroundColor: theme.background,
+          paddingTop: 0,
+          marginTop: 0 
+        }}
+      >
+        {/* Desktop Layout */}
+        <div className="max-w-6xl mx-auto p-8">
+          {/* Header Section */}
+          <div className="mb-12 text-center">
+            <div className="h-1 max-w-md mx-auto mb-12 flex gap-2">
+              <div 
+                className="flex-1 h-1 rounded-sm transition-all duration-300"
+                style={{ backgroundColor: theme.primaryButton }}
+              ></div>
+              <div 
+                className="flex-1 h-1 rounded-sm transition-all duration-300"
+                style={{ backgroundColor: theme.primaryButton }}
+              ></div>
+              <div 
+                className="flex-1 h-1 rounded-sm transition-all duration-300"
+                style={{ backgroundColor: theme.progressBarInactive }}
+              ></div>
+            </div>
+            
+            <h1 
+              className="text-4xl font-bold mb-3 cursor-pointer transition-all duration-300 hover:opacity-80" 
+              style={{ 
+                fontFamily: 'Manrope, sans-serif',
+                color: theme.textPrimary
+              }}
+              onClick={() => setIsDarkMode(!isDarkMode)}
+            >
+              Set Your Rental Terms
+            </h1>
+            <p 
+              className="text-lg font-light" 
+              style={{ 
+                fontFamily: 'Inter, sans-serif', 
+                letterSpacing: '0.5px',
+                color: theme.textSecondary
+              }}
+            >
+              Configure terms that work for you
+            </p>
+          </div>
+
+          {/* Main Content Grid */}
+          <div className="grid lg:grid-cols-2 gap-12 mb-12">
+            {/* Left Column - Input Section */}
+            <div className="space-y-8">
+              {/* Frequency Toggle */}
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <label 
+                    className="text-lg font-semibold transition-all duration-300" 
+                    style={{ 
+                      fontFamily: 'Manrope, sans-serif',
+                      color: theme.textPrimary
+                    }}
+                  >
+                    Frequency
+                  </label>
+                  <DesktopTooltip
+                    title={tooltipData.frequency.title}
+                    content={tooltipData.frequency.content}
+                  >
+                    <HelpTooltip 
+                      isDarkMode={isDarkMode} 
+                      tooltipKey="frequency"
+                      onTooltipOpen={() => {}}
+                    />
+                  </DesktopTooltip>
+                </div>
+                <div 
+                  className="relative rounded-2xl border p-1.5 transition-all duration-300"
+                  style={{ 
+                    backgroundColor: theme.cardBackground,
+                    borderColor: theme.cardBorder
+                  }}
+                >
+                  <div
+                    className={`absolute top-1.5 h-[calc(100%-12px)] rounded-[14px] shadow-[0px_2px_2px_0px_inset_rgba(255,255,255,0.25)] transition-all duration-300 ease-out ${
+                      frequency === 'weekly' ? 'left-1.5 w-[calc(50%-3px)]' : 'left-[calc(50%+3px)] w-[calc(50%-9px)]'
+                    }`}
+                    style={{ backgroundColor: theme.primaryButton }}
+                  />
+                  <div className="relative flex">
+                    <button
+                      onClick={() => setFrequency('weekly')}
+                      className="flex-1 py-3 rounded-[14px] transition-all duration-300 relative z-10 text-lg"
+                      style={{ 
+                        fontFamily: 'Manrope, sans-serif',
+                        color: frequency === 'weekly' ? '#ffffff' : theme.textMuted,
+                        fontWeight: frequency === 'weekly' ? '600' : '300'
+                      }}
+                    >
+                      Weekly
+                    </button>
+                    <button
+                      onClick={() => setFrequency('monthly')}
+                      className="flex-1 py-3 rounded-[14px] transition-all duration-300 relative z-10 text-lg"
+                      style={{ 
+                        fontFamily: 'Manrope, sans-serif',
+                        color: frequency === 'monthly' ? '#ffffff' : theme.textMuted,
+                        fontWeight: frequency === 'monthly' ? '600' : '300'
+                      }}
+                    >
+                      Monthly
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Rent Input */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <label 
+                    className="text-lg font-semibold transition-all duration-300" 
+                    style={{ 
+                      fontFamily: 'Manrope, sans-serif',
+                      color: theme.textPrimary
+                    }}
+                  >
+                    {frequency === 'weekly' ? 'Weekly Rent' : 'Monthly Rent'}
+                  </label>
+                  {rentError && (
+                    <span 
+                      className="text-sm font-medium transition-all duration-300"
+                      style={{ 
+                        fontFamily: 'Inter, sans-serif',
+                        color: '#ef4444'
+                      }}
+                    >
+                      {rentError}
+                    </span>
+                  )}
+                </div>
+                <div 
+                  className="rounded-2xl border flex items-center px-6 h-14 transition-all duration-300"
+                  style={{ 
+                    backgroundColor: theme.cardBackground,
+                    borderColor: rentError ? '#ef4444' : (isInputFocused ? theme.primaryButton : theme.cardBorder)
+                  }}
+                >
+                  <div className="w-6 h-6 mr-3">
+                    <img alt="Pound" className="w-full h-full" src={imgPound} />
+                  </div>
+                  <input
+                    type="text"
+                    value={weeklyRent}
+                    onChange={handleRentChange}
+                    onFocus={() => setIsInputFocused(true)}
+                    onBlur={() => setIsInputFocused(false)}
+                    placeholder={`What tenants will pay per ${frequency === 'weekly' ? 'week' : 'month'}`}
+                    className="pricing-input flex-1 outline-none text-lg bg-transparent transition-all duration-300"
+                    style={{ 
+                      fontFamily: 'Manrope, sans-serif',
+                      color: theme.textPrimary
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Deposit Amount */}
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <label 
+                    className="text-lg font-semibold transition-all duration-300" 
+                    style={{ 
+                      fontFamily: 'Manrope, sans-serif',
+                      color: theme.textPrimary
+                    }}
+                  >
+                    Deposit Amount
+                  </label>
+                  <DesktopTooltip
+                    title={tooltipData.deposit.title}
+                    content={tooltipData.deposit.content}
+                  >
+                    <HelpTooltip 
+                      isDarkMode={isDarkMode} 
+                      tooltipKey="deposit"
+                      onTooltipOpen={() => {}}
+                    />
+                  </DesktopTooltip>
+                </div>
+                <MultiSelector value={depositWeeks} onChange={setDepositWeeks} theme={theme} />
+              </div>
+            </div>
+
+            {/* Right Column - Calculations */}
+            <div>
+              <h2 
+                className="text-lg font-semibold mb-6 transition-all duration-300" 
+                style={{ 
+                  fontFamily: 'Manrope, sans-serif',
+                  color: theme.textPrimary
+                }}
+              >
+                Calculations
+              </h2>
+                             <div className="grid grid-cols-2 gap-2">
+                 <div className="col-span-2">
+                   <DesktopTooltip
+                     title={tooltipData.rental.title}
+                     content={tooltipData.rental.content}
+                   >
+                     <CalculationCard 
+                       label="Monthly Rental:" 
+                       value={formatCurrency(calculations.monthlyRent)} 
+                       theme={theme}
+                       tooltipKey="rental"
+                       onTooltipOpen={() => {}}
+                       showHelp={false}
+                     />
+                   </DesktopTooltip>
+                 </div>
+                 <DesktopTooltip
+                   title={tooltipData.letlyFee.title}
+                   content={tooltipData.letlyFee.content}
+                 >
+                   <CalculationCard 
+                     label="Letly fee:" 
+                     value={formatCurrency(calculations.letlyFee)} 
+                     theme={theme}
+                     tooltipKey="letlyFee"
+                     onTooltipOpen={() => {}}
+                     showHelp={false}
+                   />
+                 </DesktopTooltip>
+                 <DesktopTooltip
+                   title={tooltipData.depositTotal.title}
+                   content={tooltipData.depositTotal.content}
+                 >
+                   <CalculationCard 
+                     label="Deposit total:" 
+                     value={formatCurrency(calculations.depositAmount)} 
+                     theme={theme}
+                     tooltipKey="depositTotal"
+                     onTooltipOpen={() => {}}
+                     showHelp={false}
+                   />
+                 </DesktopTooltip>
+                 <div className="col-span-2">
+                   <DesktopTooltip
+                     title={tooltipData.youReceive.title}
+                     content={tooltipData.youReceive.content}
+                   >
+                     <CalculationCard 
+                       label="You receive:" 
+                       value={formatCurrency(calculations.landlordAmount)} 
+                       theme={theme}
+                       tooltipKey="youReceive"
+                       onTooltipOpen={() => {}}
+                       showHelp={false}
+                     />
+                   </DesktopTooltip>
+                 </div>
+               </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="max-w-md mx-auto space-y-4">
+            <button 
+              className="w-full text-white py-4 rounded-2xl text-lg shadow-[0px_2px_3px_0px_inset_rgba(255,255,255,0.36)] transition-all duration-300 hover:opacity-90"
+              style={{ 
+                fontFamily: 'Manrope, sans-serif',
+                backgroundColor: theme.primaryButton,
+                fontWeight: '600'
+              }}
+            >
+              Continue
+            </button>
+
+            <button 
+              className="w-full text-lg font-medium py-3 transition-all duration-300 hover:opacity-70"
+              style={{ 
+                fontFamily: 'Manrope, sans-serif',
+                color: theme.textSecondary
+              }}
+            >
+              Go back
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Original mobile layout
   return (
     <div 
       className={`min-h-screen relative transition-all duration-300 ${isDarkMode ? 'dark' : ''}`}
