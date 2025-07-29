@@ -598,7 +598,7 @@ const PricingDeposit: React.FC = () => {
       {/* Header */}
       <div className="h-[38px] relative">
         {/* Progress Indicator */}
-        <div className="h-1 mx-5 mt-1 flex gap-1">
+        <div className="h-1 mx-5 flex gap-1">
           <div 
             className="flex-1 h-1 rounded-sm transition-all duration-300"
             style={{ backgroundColor: theme.primaryButton }}
