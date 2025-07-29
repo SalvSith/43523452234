@@ -174,7 +174,7 @@ const TooltipModal: React.FC<TooltipModalProps> = ({ isOpen, title, content, onC
         }}
       >
         <div 
-          className="relative h-[249px] mb-3 w-[375px] touch-none transition-opacity duration-200"
+          className="relative h-[249px] mb-3 w-[375px] touch-none transition-opacity duration-200 tooltip-draggable"
           style={{ 
             opacity: isDragging ? 0.8 : 1 
           }}
@@ -189,8 +189,10 @@ const TooltipModal: React.FC<TooltipModalProps> = ({ isOpen, title, content, onC
           >
             <img 
               alt="" 
-              className="block max-w-none size-full" 
-              src={theme.background === '#1c1a20' ? tooltipBgDark : tooltipBg} 
+              className="block max-w-none size-full tooltip-background-image" 
+              src={theme.background === '#1c1a20' ? tooltipBgDark : tooltipBg}
+              draggable="false"
+              onContextMenu={(e) => e.preventDefault()}
             />
           </div>
           
@@ -208,7 +210,7 @@ const TooltipModal: React.FC<TooltipModalProps> = ({ isOpen, title, content, onC
           
           {/* Title - Theme-aware */}
           <div
-            className="absolute leading-[0] left-[187.5px] text-[26px] text-center top-[27px] translate-x-[-50%] w-[353px]"
+            className="absolute leading-[0] left-[187.5px] text-[26px] text-center top-[27px] translate-x-[-50%] w-[353px] tooltip-no-select"
             style={{ 
               fontFamily: 'Manrope, sans-serif',
               fontWeight: 700, // Bold
@@ -220,7 +222,7 @@ const TooltipModal: React.FC<TooltipModalProps> = ({ isOpen, title, content, onC
           
           {/* Content - Theme-aware */}
           <div
-            className="absolute leading-[0] left-[187px] not-italic text-[16px] text-center top-[73px] translate-x-[-50%] w-[316px]"
+            className="absolute leading-[0] left-[187px] not-italic text-[16px] text-center top-[73px] translate-x-[-50%] w-[316px] tooltip-no-select"
             style={{ 
               fontFamily: 'Inter, sans-serif',
               fontWeight: 300, // Light
@@ -719,7 +721,7 @@ const PricingDeposit: React.FC<PricingDepositProps> = ({ isDesktop = false }) =>
             />
             <div
               ref={tooltipRef}
-              className="fixed z-50 p-6 rounded-2xl shadow-xl max-w-sm transition-all duration-200"
+              className="fixed z-50 p-6 rounded-2xl shadow-xl max-w-sm transition-all duration-200 tooltip-no-select"
               style={{
                 backgroundColor: theme.cardBackground,
                 border: `1px solid ${theme.cardBorder}`,
@@ -728,13 +730,13 @@ const PricingDeposit: React.FC<PricingDepositProps> = ({ isDesktop = false }) =>
               }}
             >
               <h3 
-                className="text-lg font-bold mb-2"
+                className="text-lg font-bold mb-2 tooltip-no-select"
                 style={{ color: theme.textPrimary }}
               >
                 {title}
               </h3>
               <p 
-                className="text-sm"
+                className="text-sm tooltip-no-select"
                 style={{ color: theme.textSecondary }}
               >
                 {content}
